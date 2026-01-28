@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>fav kind of food</title>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <style>
+            body {
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                text-align: center;
+                margin: 40px;
+
+            }
+
+            form {
+                margin-bottom: 30px;
+            }
+
+            input {
+                padding: 8px;
+                font-size: 16px;
+
+            }
+
+            button {
+                padding: 8px 12px;
+                font-size: 16px;
+                cursor: pointer;
+
+            }
+
+            canvas {
+                max-width: 600px;
+                margin: auto;
+            }
+        </style>
+    </head>
+    <body>
+
+        <h1>fav kind of food</h1>
+        <!-- lahat ng ito ahah -->
+        <form id="foodForm">
+            <label for="foodInput">what's ur favorite food from?</label><br><br>
+            <input type="text" id="foodInput" required>
+            <button type="submit">Submit</button>
+        </form>
+
+        <canvas id="foodchart"></canvas>
+
+        <script>
+            //store food counter
+            const foodCounts = {};
+
+            const canvas = document.getElementById('foodchart');
+            if (!canvas) {
+                console.error('Canvas element with id "foodchart" not found.');
+            } else {
+                const ctx = canvas.getContext('2d');
+
+                const foodChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Number of Votes per food',
+                        data: [],
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            precision: 0
+                        }
+                    }
+                }
+            });
+            }
+
+            //form submission handler
+            document.getElementById('foodForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const foodInput = document.getElementById('foodInput');
+                const food = foodInput.value.trim();
+
+                if (food) {
+                    //update count
+                    if (Object.prototype.hasOwnProperty.call(foodCounts, food)) {
+                        foodCounts[food] += 1;
+                    } else {
+                        foodCounts[food] = 1;
+                    }
+
+                    //update chart
+                    foodChart.data.labels = Object.keys(foodCounts);
+                    foodChart.data.datasets[0].data = Object.values(foodCounts);
+                    foodChart.update();
+
+                    //clear input
+                    foodInput.value = '';
+                }
+            });
+
+        </script>
+    </body>
+</html>
